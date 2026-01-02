@@ -1,0 +1,1 @@
+FROM supabase/realtime:v2.68.0
