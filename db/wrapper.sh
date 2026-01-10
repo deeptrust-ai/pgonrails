@@ -39,9 +39,14 @@ fi
 echo "" >> /etc/postgresql/postgresql.conf
 echo "listen_addresses = '${LISTEN_ADDRESSES}'" >> /etc/postgresql/postgresql.conf
 
-# Start postgres_exporter in background (will connect once postgres is ready)
-export DATA_SOURCE_NAME="postgresql://postgres:${POSTGRES_PASSWORD}@localhost:5432/postgres?sslmode=disable"
-postgres_exporter --web.listen-address=":9187" &
+# Start postgres_exporter in background after postgres is ready
+(
+    until pg_isready -h localhost -p 5432 -q; do
+        sleep 1
+    done
+    export DATA_SOURCE_NAME="postgresql://postgres:${POSTGRES_PASSWORD}@localhost:5432/postgres?sslmode=disable"
+    postgres_exporter --web.listen-address=":9187"
+) &
 
 # Call the entrypoint script with the
 # appropriate PGHOST & PGPORT and redirect
