@@ -174,7 +174,7 @@ services:
     url: http://$STORAGE_HOST:$STORAGE_PORT/
     routes:
       - name: storage-v1-all
-        strip_path: false
+        strip_path: true
         preserve_host: true
         paths:
           - /storage/v1/
